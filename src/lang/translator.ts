@@ -18,7 +18,16 @@
 *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 *    GNU Lesser General Public License for more details.
 */
+import en from "./en.json"
 
-export function translate(string){
+enum languages {
+    en = 0,
+    es
+}
 
+export default function translate(string: string, lang: languages): string {
+    switch(lang){
+    case languages.en: return Object.values(en).find(value => value == string) as string
+    }
+    return ""
 }

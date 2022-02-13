@@ -20,15 +20,40 @@
 */
 
 import colors from "colors"
+import translate from "./lang/translator"
 import { version, stable } from "./version.json"
+import { existsSync } from "fs"
+import wizard from "./wizard/wizard"
+import path from "node:path"
 colors.enable()
 
-console.log(`Running OSUtils v${version}`.blue, "\n")
-if(!stable){
-    console.warn("This is an un-stable version, expect bugs to happen. Please report any bugs you find!".yellow)
-    console.log("Starting on 5 seconds...")
+// Here is where all config files will be stored
+let APPDATA: string
+
+switch(process.platform){
+case "win32": APPDATA = process.env.APPDATA as string; break
+case "linux": APPDATA = process.env.HOME as string + "/.config"; break
 }
-setTimeout(() => {
-    console.clear()
-    console.log("Welcome to OSUtils!".green)
-}, 5000)
+
+const start = async () => {
+    // Path to the config file
+    const pth = path.join(APPDATA, "OSUtils/config.json")
+    if(!existsSync(path.join(APPDATA, "OSUtils/"))) await wizard(APPDATA)
+    console.log(
+        translate("Running OSUtils v%s", 
+            await import(pth)
+        ).blue, version
+    )
+    console.log("\n")
+
+    if(!stable){
+        console.warn("This is an un-stable version, expect bugs to happen. Please report any bugs you find!".yellow)
+        console.log("Starting on 5 seconds...")
+    }
+    setTimeout(() => {
+        console.clear()
+        console.log("Welcome to OSUtils!".green)
+    }, 5000)
+}
+
+start()
