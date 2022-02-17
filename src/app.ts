@@ -25,6 +25,7 @@ import { version, stable } from "./version.json"
 import { existsSync } from "fs"
 import wizard from "./wizard/wizard"
 import path from "node:path"
+import initialMenu from "./menu"
 colors.enable()
 
 // Here is where all config files will be stored
@@ -37,11 +38,15 @@ case "linux": APPDATA = process.env.HOME as string + "/.config"; break
 
 const start = async () => {
     // Path to the config file
-    const pth = path.join(APPDATA, "OSUtils/config.json")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let pth: any = path.join(APPDATA, "OSUtils/config.json")
     if(!existsSync(path.join(APPDATA, "OSUtils/"))) await wizard(APPDATA)
+    pth = await import(pth)
+
     console.log(
         translate("Running OSUtils v%s", 
-            await import(pth)
+            // ! pkg don't allow to use dynamic imports, this might be a source of bugs
+            pth.locale
         ).blue, version
     )
     console.log("\n")
@@ -49,11 +54,16 @@ const start = async () => {
     if(!stable){
         console.warn("This is an un-stable version, expect bugs to happen. Please report any bugs you find!".yellow)
         console.log("Starting on 5 seconds...")
-    }
-    setTimeout(() => {
+        setTimeout(() => {
+            console.clear()
+            console.log("Welcome to OSUtils!".green)
+            console.log("\n")
+            initialMenu(process.platform as string, pth.locale)
+        }, 5000)
+    } else {
         console.clear()
         console.log("Welcome to OSUtils!".green)
-    }, 5000)
+    }
 }
 
 start()

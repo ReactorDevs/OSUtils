@@ -20,14 +20,9 @@
 */
 import en from "./en.json"
 
-enum languages {
-    en = 0,
-    es
-}
-
-export default function translate(string: string, lang: languages): string {
+export default function translate(string: string, lang: string): string {
     switch(lang){
-    case languages.en: return Object.values(en).find(value => value == string) as string
+    case "en": return Object.values(en).find(value => value == string) as string
     }
     return ""
 }

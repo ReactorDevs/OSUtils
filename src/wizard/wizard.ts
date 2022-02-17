@@ -19,7 +19,7 @@
 *    GNU Lesser General Public License for more details.
 */
 import { prompt } from "enquirer"
-import { existsSync, mkdir, mkdirSync, promises } from "fs"
+import { existsSync, mkdirSync, promises } from "fs"
 import path from "path"
 
 export default async function wizard(APPDATA: string){
